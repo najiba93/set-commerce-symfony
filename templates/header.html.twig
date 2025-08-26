@@ -1,0 +1,103 @@
+<header>
+<div class="header-container">
+
+  {#  Logo et titre du site #}
+  {#  Logo principal du site avec un fallback si l’image ne charge pas #}
+  <div class="logo-div">
+    <img src="/img/logo.jpg" alt="Logo Mode & Tendance" class="logo-header">
+    <span id="logo-fallback">Mode & Tendance</span>
+  </div>
+
+  {#  Menu de navigation principal #}
+  <nav class="site-nav" id="siteNav">
+    <ul>
+    
+      <li><a href="{{ path('Accueil') }}">Accueil</a></li>
+
+      {#  Lien vers la liste des produits #}
+      <li><a href="{{ path('Produits') }}">Produits</a></li>
+
+     
+
+      {#  Affichage du lien "Ajouter Produit" uniquement pour les admins #}
+      {% if is_granted("ROLE_ADMIN") %}
+        <li><a href="{{ path('admin_produit_new') }}">Ajouter Produit</a></li>
+      {% endif %}
+    </ul>
+      <div class="categories-container">
+   
+    <div class="categories-buttons">
+      {% for categorie in categories %}
+        <a href="{{ path('categorie_produits', {id: categorie.id}) }}" class="btn btn-outline-primary btn-sm">
+          {{ categorie.nom }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  </nav>
+
+  {#  Actions à droite (bouton menu mobile + icônes) #}
+  <div class="header-actions">
+    <button class="nav-toggle" aria-controls="siteNav" aria-expanded="false" aria-label="Menu">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+
+  {#  Icônes en haut à droite du header (profil, panier, contact) #}
+  <div class="icon-header dropdown">
+
+    {#  Icône Profil avec menu déroulant conditionnel #}
+    <a
+      class="dropdown-toggle"
+      href="#"
+      id="profilMenu"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      <i class="fi fi-br-user {% if app.user %}text-success{% else %}text-secondary{% endif %}"></i>
+
+    </a>
+
+    {#  Menu déroulant : selon l’état de connexion #}
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profilMenu">
+      {% if app.user %}
+        {# Si connecté : lien vers profil + déconnexion #}
+        <li><a class="dropdown-item" href="{{ path('profil') }}">Mon Profil</a></li>
+        {% if is_granted('ROLE_ADMIN') %}
+        <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}">Admin</a></li>
+        {% endif %}
+        <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+      {% else %}
+        {# Si non connecté : lien vers connexion + inscription #}
+        <li><a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a></li>
+        <li><a class="dropdown-item" href="{{ path('inscription') }}">Inscription</a></li>
+      {% endif %}
+    </ul>
+
+    {#  Icône Panier toujours visible + badge quantité #}
+    {% set _panier = app.session is defined and app.session ? app.session.get('panier') : {} %}
+    {% set _count = 0 %}
+    {% if _panier %}
+      {% for _id, _qte in _panier %}
+        {% set _count = _count + _qte %}
+      {% endfor %}
+    {% endif %}
+    <a href="{{ path('Panier') }}" title="Mon Panier" style="position: relative; display: inline-block;">
+      <i class="fi fi-bs-shopping-cart ms-3"></i>
+      {% if _count > 0 %}
+        <span style="position: absolute; top: -6px; right: -6px; background: #dc3545; color: #fff; border-radius: 999px; padding: 0 6px; font-size: 11px; line-height: 18px; min-width: 18px; text-align: center;">{{ _count }}</span>
+      {% endif %}
+    </a>
+
+    {#  Icône Contact toujours visible #}
+    <a href="{{ path('contact') }}" title="Contactez-nous">
+      <i class="fi fi-bs-envelope ms-3"></i>
+    </a>
+  </div>
+  </div>
+
+</div>
+
+
+</header>

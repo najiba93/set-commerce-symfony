@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le produit - Admin{% endblock %}
+
+{% block main %}
+<div class="container mt-5 mb-5">
+
+  {% if produit.images|length > 0 %}
+    <div class="text-center mb-4">
+      <h5 class="mb-3">Images actuelles du produit</h5>
+      <div class="row justify-content-center">
+        {% for image in produit.images %}
+          <div class="col-md-3 mb-3">
+            <img src="{{ asset(image.url) }}" alt="{{ produit.nom }}" class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
+          </div>
+        {% endfor %}
+      </div>
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> 
+        <strong>Note :</strong> Si vous sélectionnez de nouvelles images, les anciennes seront remplacées.
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm">
+        <h1 class="h4 mb-3 text-center">Modifier le produit : {{ produit.nom }}</h1>
+
+        {% form_theme form 'bootstrap_5_layout.html.twig' %}
+        {{ form_start(form) }}
+
+        <div class="mb-3">
+          {{ form_row(form.nom) }}
+        </div>
+
+        <div class="mb-3">
+          {{ form_row(form.description) }}
+        </div>
+
+        <div class="mb-3">
+          {{ form_row(form.prix) }}
+        </div>
+
+        <div class="mb-3">
+          {{ form_row(form.images) }}
+        </div>
+
+        <div class="mb-3">
+          <label for="couleurs" class="form-label">Couleurs disponibles</label>
+          <input type="text" 
+                 id="couleurs" 
+                 name="produit[couleurs]" 
+                 value="{{ couleursTexte }}" 
+                 class="form-control" 
+                 placeholder="Ex: Rouge, Bleu, Vert (séparez par des virgules)">
+          <div class="form-text">Écrivez les couleurs disponibles séparées par des virgules</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form_row(form.tailles) }}
+        </div>
+
+        <div class="mb-3">
+          {{ form_row(form.categorie) }}
+        </div>
+
+        <div class="mt-4">
+          {{ form_row(form.submit) }}
+        </div>
+
+        {{ form_end(form) }}
+
+        <form method="post" action="{{ path('produit_supprimer', {id: produit.id}) }}" onsubmit="return confirm('Confirmer la suppression ?')">
+          <button type="submit" class="btn btn-danger w-100 mt-3">Supprimer le produit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
